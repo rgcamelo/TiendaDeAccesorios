@@ -1,0 +1,144 @@
+{% extends 'base.html' %} {% block content %}
+
+<!--INICIO DEL FORMULARIO DE USUARIOS-->
+<div class="container-md">
+    <div class="abs-center">
+        <form>
+            <br>
+            <div class="col-md-8">
+                <h2>Gestión de Usuarios</h2>
+            </div>
+            <hr>
+            <!-- Search input-->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Buscar Usuario
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+          </svg>
+        </button>
+                        </div>
+                        <input type="text" class="form-control" id="buscar()" name="buscar()" placeholder="Palabra clave">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="usuario">Usuario:</label>
+                <div class="col-md-6">
+                    <input id="usuario" name="usuario" type="text" placeholder="Ingrese Usuario" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="nombre">Nombres:</label>
+                <div class="col-md-6">
+                    <input id="nombre" name="nombre" type="text" placeholder="Ingrese Nombres" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="apellido">Apellidos:</label>
+                <div class="col-md-6">
+                    <input id="apellido" name="apellido" type="text" placeholder="Ingrese Apellidos" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="cedula">Identificacion:</label>
+                <div class="col-md-6">
+                    <input id="cedula" name="cedula" type="text" placeholder="No. Identificacion" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="fechaNacimiento">Fecha Nacimiento:</label>
+                <div class="col-md-6">
+                    <input id="fechaNacimiento" name="fechaNacimiento" type="date" placeholder="dd/mm/aaaa" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="correo">Email:</label>
+                <div class="col-md-6">
+                    <input id="correo" name="correo" type="email" placeholder="Ingrese Email" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="direccion">Direccion: </label>
+                <div class="col-md-6">
+                    <input id="direccion" name="direccion" type="text" placeholder="Ingrese Direccion" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="telefono">Celular:</label>
+                <div class="col-md-6">
+                    <input id="telefono" name="telefono" type="text" placeholder="Ingrese Celular" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Multiple Radios -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="tipoUsuario">Tipo Perfil:</label>
+                <div class="col-md-4">
+                    <div class="radio">
+                        <label for="tipoUsuario-0">
+        <input type="radio" name="tipoUsuario" id="tipoUsuario-0" value="1" checked="checked">
+        Administrador
+      </label>
+                    </div>
+                    <div class="radio">
+                        <label for="tipoUsuario-1">
+        <input type="radio" name="tipoUsuario" id="tipoUsuario-1" value="2">
+        Usuario
+      </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiple Radios -->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <!--Switch para estado-->
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="estadoUsuario">
+                        <label class="custom-control-label" for="estadoUsuario">Activar Usuario</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="crear()">Gestion:</label>
+                <div class="col-md-8">
+                    <button id="crear()" name="crear()" class="btn btn-success">Registrar</button>
+                    <button id="modificar()" name="modificar()" class="btn btn-primary">Actualizar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container-md">
+    <div class="abs-center">
+        <form>
+            <br>
+            <div class="col-md-8">
+                <h2 class="Display-2">Gestión de Productos</h2>
+            </div>
+            <hr>
+            <!-- Search input-->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button">Buscar Producto
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+          </svg>
+        </button>
+                        </div>
+                        <input type="text" class="form-control" id="buscar()" name="buscar()" placeholder="Palabra clave" aria-label="" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbnombreProducto">Nombre Producto :</label>
+                <div class="col-md-6">
+                    <input id="nombreProducto" name="nombreProducto" type="text" placeholder="Nombre Producto" class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbreferencia">Referencia Producto: </label>
+                <div class="col-md-6">
+                    <input id="referenciaProducto" name="referenciaProducto" type="text" placeholder="Ref. Producto" class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbmarca">Marca del Producto: </label>
+                <div class="col-md-6">
+                    <input id="marcaProducto" name="marcaProducto" type="text" placeholder="Marca Producto" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbcantidad">Cantidad Producto: </label>
+                <div class="col-md-6">
+                    <input id="cantidadProducto" name="cantidadProducto" type="number" placeholder="Cantidad" class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <label for="subirImagenProducto">Subir imagen producto</label>
+                    <input type="file" class="form-control-file" id="subirImagenProducto">
+                </div>
+
+            </div>
+
+            <!-- Multiple Radios -->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <!--Switch para estado-->
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="estadoProducto">
+                        <label class="custom-control-label" for="estadoProducto">Activar Producto</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="crear()">Opciones:</label>
+                <div class="col-md-8">
+                    <button id="crear()" name="crear()" class="btn btn-success">Registrar</button>
+                    <button id="modificar()" name="modificar()" class="btn btn-primary">Modificar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
