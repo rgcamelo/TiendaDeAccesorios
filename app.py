@@ -22,15 +22,15 @@ class Producto(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    usuario = db.Column(db.String(25))
-    nombres = db.Column(db.String(50))
-    apellidos = db.Column(db.String(50))
-    identificacion = db.Column(db.String(15))
+    usuario = db.Column(db.String(25), nullable=False)
+    nombres = db.Column(db.String(50), nullable=False)
+    contrasena = db.Column(db.String(50), nullable=False)
+    identificacion = db.Column(db.String(15), nullable=False)
     fechaNacimiento = db.Column(db.DateTime, default=datetime.utcnow)
-    email = db.Column(db.String(30))
-    direccion = db.Column(db.String(25))
-    celular = db.Column(db.String(15))
-    tipo = db.Column(db.String)
+    email = db.Column(db.String(30), nullable=False)
+    direccion = db.Column(db.String(25), nullable=False)
+    celular = db.Column(db.String(15), nullable=False)
+    tipo = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return '<User %r>' % self.id
@@ -117,17 +117,17 @@ def registrarUser():
     if request.method == 'POST':
         usuario = request.form['usuario']
         nombres = request.form['nombres']
-        apellidos = request.form['apellidos']
+        contrasena = request.form['contrasena']
         cedula = request.form['cedula']
         fechaNacimiento = request.form['fechaNacimiento']
+        format = '%Y-%m-%d'
+        fecha = datetime.strptime(fechaNacimiento, format)
         email = request.form['email']
         direccion = request.form['direccion']
         celular = request.form['celular']
         tipoUsuario = request.form['tipoUsuario']
         new_User = User(
-        usuario=usuario,nombres=nombres,apellidos=apellidos,
-        identificacion=cedula,fechaNacimiento=fechaNacimiento,email=email,
-        direccion=direccion,celular=celular,tipo=tipoUsuario)
+        usuario=usuario,nombres=nombres,email=email,tipo=tipoUsuario,identificacion=cedula,direccion=direccion,celular=celular, fechaNacimiento=fecha,contrasena=contrasena)
 
         #return(new_User.nombres+new_User.apellidos+new_User.celular+new_User.direccion+new_User.email+new_User.fechaNacimiento+new_User.identificacion+new_User.tipo+new_User.usuario)
 
@@ -140,7 +140,44 @@ def registrarUser():
 
     else:
         return render_template('index.html')
+
+@app.route('/deleteUser/<int:id>')
+def deleteUser(id):
+    userDelete = User.query.get_or_404(id)
+
+    try:
+        db.session.delete(userDelete)
+        db.session.commit()
+        return redirect('/user')
+    except:
+        return 'Error'
     
+@app.route('/updateUser/<int:id>', methods=['GET', 'POST'])
+def updateUser(id):
+    user = User.query.get_or_404(id)
+
+    if request.method == 'POST':
+        user.nombres = request.form['nombres']
+        user.usuario = request.form['usuario']
+        user.contrasena = request.form['contrasena']
+        user.identificacion = request.form['cedula']
+        fechaNacimiento = request.form['fechaNacimiento']
+        format = '%Y-%m-%d'
+        fecha = datetime.strptime(fechaNacimiento, format)
+        user.fechaNacimiento = fecha
+        user.email = request.form['email']
+        user.direccion = request.form['direccion']
+        user.celular = request.form['celular']
+        user.tipo = request.form['tipoUsuario']
+
+        try:
+            db.session.commit()
+            return redirect('/user')
+        except:
+            return 'Error'
+
+    else:
+        return render_template('updateUser.html', user=user)
 
 if __name__ == "__main__":
     app.run(debug=True)

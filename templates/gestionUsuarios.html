@@ -12,22 +12,39 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="col">Usuario</th>
+                <th scope="col">Nombres</th>
+                <th scope="col">Contraseña</th>
+                <th scope="col">Identificacion</th>
+                <th scope="col">Fecha de Nacimiento</th>
+                <th scope="col">Email</th>
+                <th scope="col">Direccion</th>
+                <th scope="col">Celular</th>
+                <th scope="col">Tipo</th>
                 <th scope="col">Opciones</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
             <tr>
+                <td>{{ user.id }}</td>
                 <td>{{ user.nombres }}</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td></td>
+                <td>{{ user.usuario }}</td>
+                <td>{{ user.contrasena }}</td>
+                <td>{{ user.identificacion }}</td>
+                <td>{{ user.fechaNacimiento.strftime('%Y-%m-%d') }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.direccion }}</td>
+                <td>{{ user.celular }}</td>
+
+                {% if user.tipo == '1' %}
+                <td>Administrador</td>
+                {% endif %} {% if user.tipo == '2' %}
+                <td>Normal</td>
+                {% endif %}
                 <td>
-                    <button id="crear()" name="crear()" class="btn btn-danger">Eliminar</button>
-                    <button id="modificar()" name="modificar()" class="btn btn-primary">Modificar</button>
+                    <a href="/deleteUser/{{user.id}}" class="btn btn-danger">Eliminar</a>
+                    <a href="/updateUser/{{user.id}}" class="btn btn-primary">Modificar</a>
                 </td>
             </tr>
             {% endfor %}
