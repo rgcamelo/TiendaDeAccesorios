@@ -1,0 +1,73 @@
+{% extends 'base.html' %} {% block content %}
+
+
+
+<div class="container-md">
+
+    <div class="abs-center">
+        <form action="/updateProduct/{{ product.id }}" method="POST">
+            <br>
+            <div class="col-md-8">
+                <h2 class="Display-2">Actualizar Producto: {{ product.nombre}}</h2>
+            </div>
+            <hr>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbnombreProducto">Nombre Producto :</label>
+                <div class="col-md-6">
+                    <input value="{{ product.nombre}}" id="nombreProducto" name="nombre" type="text" placeholder="Nombre Producto" class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbreferencia">Referencia Producto: </label>
+                <div class="col-md-6">
+                    <input value="{{ product.referencia}}" id="referenciaProducto" name="referencia" type="text" placeholder="Ref. Producto" class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbmarca">Marca del Producto: </label>
+                <div class="col-md-6">
+                    <input value="{{ product.marca}}" id="marcaProducto" name="marca" type="text" placeholder="Marca Producto" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbcantidad">Cantidad Producto: </label>
+                <div class="col-md-6">
+                    <input value="{{ product.cantidad}}" id="cantidadProducto" name="cantidad" type="number" placeholder="Cantidad" class="form-control input-md" required="">
+                </div>
+            </div>
+
+            <!-- Button (Double) -->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <label for="subirImagenProducto">Subir imagen producto</label>
+                    <input type="file" class="form-control-file" id="subirImagenProducto">
+                </div>
+
+            </div>
+
+            <!-- Multiple Radios -->
+            <div class="form-group">
+                <div class="col-md-4">
+                    <!--Switch para estado-->
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="estadoProducto">
+                        <label class="custom-control-label" for="estadoProducto">Activar Producto</label>
+                    </div>
+                </div>
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Actualizar">
+        </form>
+    </div>
+</div>
+
+{% endblock %}
