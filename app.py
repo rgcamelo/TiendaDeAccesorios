@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+from utils import isPasswordValid, isUsernameValid
 from datetime import datetime
 from flask_bootstrap import Bootstrap
 
@@ -35,9 +36,29 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.id
 
+
+
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        contrasena = request.form['contrasena']
+
+        men = ''
+        if not isUsernameValid(usuario):
+            men= men + 'Usuario invalido'
+        if not isPasswordValid(contrasena):
+            men = men + ' Contraseña invalida'
+
+        if men == '':
+            return redirect('/home')
+        else:
+            return render_template('home.html', mensaje=men)
 
 @app.route('/home')
 def home():

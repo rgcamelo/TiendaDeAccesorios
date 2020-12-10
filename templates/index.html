@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v4.1.1">
-    <title>Signin Template · Bootstrap</title>
+    <title>Iniciar Sesion</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/sign-in/">
 
@@ -34,19 +34,14 @@
 </head>
 
 <body class="text-center">
-    <a href="/home">Home</a>
-    <form class="form-signin">
+    <form action="/login" method="POST" class="form-signin">
         <img class="mb-4" src="{{ url_for('static',filename='img/PLOGOb.png')}}" alt="" width="120" height="120">
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <div class="checkbox mb-3">
-            <label>
-    </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesion</h1>
+        <label for="inputEmail" class="sr-only">Usuario</label>
+        <input name="usuario" type="text" id="usuario" class="form-control" placeholder="Usuario" required autofocus>
+        <label for="inputPassword" class="sr-only">Contraseña</label>
+        <input name="contrasena" type="password" id="contrasena" class="form-control" placeholder="Contraseña" required>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Registrar">
         <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
     </form>
 </body>
