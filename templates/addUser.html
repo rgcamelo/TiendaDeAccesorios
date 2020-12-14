@@ -13,7 +13,16 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="nombre">Nombres:</label>
                 <div class="col-md-6">
-                    <input id="nombres" name="nombres" type="text" placeholder="Ingrese Nombres" class="form-control input-md" required>
+                    <input id="nombres" name="nombres" type="text" placeholder="Ingrese Nombres" maxlength="50" class="form-control input-md" required>
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="nombre">Apellido:</label>
+                <div class="col-md-6">
+                    <input id="nombres" name="apellidos" type="text" placeholder="Ingrese Apellidos" maxlength="50" class="form-control input-md" required>
 
                 </div>
             </div>
@@ -22,7 +31,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="usuario">Usuario:</label>
                 <div class="col-md-6">
-                    <input id="usuario" name="usuario" type="text" placeholder="Ingrese Usuario" class="form-control input-md" required>
+                    <input id="usuario" name="usuario" type="text" placeholder="Ingrese Usuario" maxlength="25" class="form-control input-md" required>
 
                 </div>
             </div>
@@ -32,7 +41,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="apellido">Contraseña:</label>
                 <div class="col-md-6">
-                    <input id="contrasena" name="contrasena" type="password" placeholder="Ingrese Contraseña" class="form-control input-md" required>
+                    <input id="contrasena" name="contrasena" type="password" placeholder="Ingrese Contraseña" minlength="8" maxlength="11" class="form-control input-md" required>
 
                 </div>
             </div>
@@ -96,6 +105,25 @@
                         <label for="tipoUsuario-1">
         <input type="radio" name="tipoUsuario" id="tipoUsuario-1" value="2">
         Usuario
+      </label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" required for="estadoUsuario">Estado Usuario:</label>
+                <div class="col-md-4">
+                    <div class="radio">
+                        <label for="estadoUsuario-0">
+        <input type="radio" name="estadoUsuario" id="estadoUsuario-0" value="1">
+        Activo
+      </label>
+                    </div>
+                    <div class="radio">
+                        <label for="estadoUsuario-1">
+        <input type="radio" name="estadoUsuario" id="estadoUsuario-1" value="2">
+        Inactivo
       </label>
                     </div>
                 </div>

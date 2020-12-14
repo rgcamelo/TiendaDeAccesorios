@@ -10,13 +10,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///accesorios.db'
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 
-class Producto(db.Model):
+class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200), nullable=False)
     referencia = db.Column(db.String(25), nullable=False)
     marca = db.Column(db.String(50), nullable=False)
+    precio = db.Column(db.Integer, nullable =False)
     cantidad = db.Column(db.Integer, nullable=False)
+    imagen = db.Column(db.String(50), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    estado = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return '<Product %r>' % self.id
@@ -25,6 +28,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(25), nullable=False)
     nombres = db.Column(db.String(50), nullable=False)
+    apellidos = db.Column(db.String(50), nullable=False)
     contrasena = db.Column(db.String(50), nullable=False)
     identificacion = db.Column(db.String(15), nullable=False)
     fechaNacimiento = db.Column(db.DateTime, default=datetime.utcnow)
@@ -32,9 +36,21 @@ class User(db.Model):
     direccion = db.Column(db.String(25), nullable=False)
     celular = db.Column(db.String(15), nullable=False)
     tipo = db.Column(db.String, nullable=False)
+    estado = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return '<User %r>' % self.id
+
+class User_Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'),nullable=False)
+    description = db.Column(db.String(50), nullable=False)
+
+
+
+    def __repr__(self):
+        return '<User_Product %r>' % self.id
 
 
 
@@ -48,6 +64,19 @@ def login():
     if request.method == 'POST':
         usuario = request.form['usuario']
         contrasena = request.form['contrasena']
+        
+        valido = User.query.filter_by(usuario=usuario,contrasena=contrasena).first()
+
+        if valido != None:
+            return redirect('/home')
+        else:
+            return redirect('/index')
+
+        if valido == '':
+            return "No encontro"
+        else:
+            return "encontro"
+
 
         men = ''
         if not isUsernameValid(usuario):
@@ -75,7 +104,7 @@ def addUser():
 
 @app.route('/product')
 def product():
-    products = Producto.query.order_by(Producto.date_created).all()
+    products = Product.query.order_by(Product.date_created).all()
     return render_template('gestionProductos.html',products=products)
 
 @app.route('/addProduct')
@@ -89,7 +118,7 @@ def registrarProduct():
         referencia = request.form['referencia']
         marca = request.form['marca']
         cantidad = request.form['cantidad']
-        new_Accesorio = Producto(nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad)
+        new_Accesorio = Product(nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad)
 
         try:
             db.session.add(new_Accesorio)
@@ -104,7 +133,7 @@ def registrarProduct():
 
 @app.route('/deleteProduct/<int:id>')
 def delete(id):
-    accessorioDelete = Producto.query.get_or_404(id)
+    accessorioDelete = Product.query.get_or_404(id)
 
     try:
         db.session.delete(accessorioDelete)
@@ -115,7 +144,7 @@ def delete(id):
 
 @app.route('/updateProduct/<int:id>', methods=['GET', 'POST'])
 def update(id):
-    product = Producto.query.get_or_404(id)
+    product = Product.query.get_or_404(id)
 
     if request.method == 'POST':
         product.nombre = request.form['nombre']
@@ -138,6 +167,7 @@ def registrarUser():
     if request.method == 'POST':
         usuario = request.form['usuario']
         nombres = request.form['nombres']
+        apellidos = request.form['apellidos']
         contrasena = request.form['contrasena']
         cedula = request.form['cedula']
         fechaNacimiento = request.form['fechaNacimiento']
@@ -147,7 +177,8 @@ def registrarUser():
         direccion = request.form['direccion']
         celular = request.form['celular']
         tipoUsuario = request.form['tipoUsuario']
-        new_User = User(
+        estadoUsuario = request.form['estadoUsuario']
+        new_User = User(estado = estadoUsuario, apellidos = apellidos,
         usuario=usuario,nombres=nombres,email=email,tipo=tipoUsuario,identificacion=cedula,direccion=direccion,celular=celular, fechaNacimiento=fecha,contrasena=contrasena)
 
         #return(new_User.nombres+new_User.apellidos+new_User.celular+new_User.direccion+new_User.email+new_User.fechaNacimiento+new_User.identificacion+new_User.tipo+new_User.usuario)
