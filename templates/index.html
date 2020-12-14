@@ -30,17 +30,19 @@
         }
     </style>
     <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
 </head>
 
 <body class="text-center">
+    {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
     <form action="/login" method="POST" class="form-signin">
         <img class="mb-4" src="{{ url_for('static',filename='img/PLOGOb.png')}}" alt="" width="120" height="120">
         <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesion</h1>
         <label for="inputEmail" class="sr-only">Usuario</label>
-        <input name="usuario" type="text" id="usuario" class="form-control" placeholder="Usuario" required autofocus>
+        <input name="usuario" type="text" id="usuario" class="form-control" placeholder="Usuario" autofocus>
         <label for="inputPassword" class="sr-only">Contraseña</label>
-        <input name="contrasena" type="password" id="contrasena" class="form-control" placeholder="Contraseña" required>
+        <input name="contrasena" type="password" id="contrasena" class="form-control" placeholder="Contraseña">
         <input class="btn btn-lg btn-primary btn-block" type="submit" value="Iniciar Sesion">
         <p class="mt-5 mb-3 text-muted">&copy; 2020</p>
     </form>

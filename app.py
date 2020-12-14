@@ -1,14 +1,18 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, session, g, flash
 from flask_sqlalchemy import SQLAlchemy
 from utils import isPasswordValid, isUsernameValid
 from datetime import datetime
 from flask_bootstrap import Bootstrap
+import functools
+import os
+
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///accesorios.db'
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
+app.secret_key = os.urandom( 24 )
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -55,63 +59,85 @@ class User_Product(db.Model):
 
 
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
+    if g.user:
+        return redirect( url_for('home'))    
     return render_template('index.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-    if request.method == 'POST':
-        usuario = request.form['usuario']
-        contrasena = request.form['contrasena']
-        
-        valido = User.query.filter_by(usuario=usuario,contrasena=contrasena).first()
+    try:
+        if g.user:
+            return redirect(url_for('home'))
+            
+        if request.method == 'POST':
+            error = None
+            usuario = request.form['usuario']
+            contrasena = request.form['contrasena']
+            #return(usuario+contrasena)
 
-        if valido != None:
-            return redirect('/home')
-        else:
-            return redirect('/index')
+            if not usuario:
+                #return('Debe ingresar el usuario')
+                return render_template('index.html')
 
-        if valido == '':
-            return "No encontro"
-        else:
-            return "encontro"
+            if not contrasena:
+                #return('Contraseña requerida')
+                return render_template('index.html')
 
+            user = User.query.filter_by(usuario=usuario,contrasena=contrasena).first()
 
-        men = ''
-        if not isUsernameValid(usuario):
-            men= men + 'Usuario invalido'
-        if not isPasswordValid(contrasena):
-            men = men + ' Contraseña invalida'
+            if user is None:
+                return('No encontro')
+                error = 'Usuario o contraseña invalidos'
+            else:
+                session.clear()
+                id= str(user.id)
+                session['user_id'] = id
+                return redirect( url_for('home'))
+        return render_template('index.html')
+    except:
+        return render_template('index.html')
 
-        if men == '':
-            return redirect('/home')
-        else:
-            return render_template('home.html', mensaje=men)
+def login_required(view):
+    @functools.wraps( view )
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect( url_for( 'index' ) )
+
+        return view( **kwargs )
+
+    return wrapped_view
 
 @app.route('/home')
+@login_required
 def home():
     return render_template('home.html')
 
 @app.route('/user')
+@login_required
 def user():
     users = User.query.all()
     return render_template('gestionUsuarios.html',users=users)
 
 @app.route('/addUser')
+@login_required
 def addUser():
     return render_template('addUser.html')
 
 @app.route('/product')
+@login_required
 def product():
     products = Product.query.order_by(Product.date_created).all()
     return render_template('gestionProductos.html',products=products)
 
 @app.route('/addProduct')
+@login_required
 def addProduct():
     return render_template('addProduct.html')
 
 @app.route('/registrarProduct', methods=['POST'])
+@login_required
 def registrarProduct():
     if request.method == 'POST':
         nombre = request.form['nombre']
@@ -132,6 +158,7 @@ def registrarProduct():
 
 
 @app.route('/deleteProduct/<int:id>')
+@login_required
 def delete(id):
     accessorioDelete = Product.query.get_or_404(id)
 
@@ -143,6 +170,7 @@ def delete(id):
         return 'Error'
 
 @app.route('/updateProduct/<int:id>', methods=['GET', 'POST'])
+@login_required
 def update(id):
     product = Product.query.get_or_404(id)
 
@@ -163,6 +191,7 @@ def update(id):
 
 
 @app.route('/registrarUser', methods=['POST'])
+@login_required
 def registrarUser():
     if request.method == 'POST':
         usuario = request.form['usuario']
@@ -194,6 +223,7 @@ def registrarUser():
         return render_template('index.html')
 
 @app.route('/deleteUser/<int:id>')
+@login_required
 def deleteUser(id):
     userDelete = User.query.get_or_404(id)
 
@@ -205,6 +235,7 @@ def deleteUser(id):
         return 'Error'
     
 @app.route('/updateUser/<int:id>', methods=['GET', 'POST'])
+@login_required
 def updateUser(id):
     user = User.query.get_or_404(id)
 
@@ -230,6 +261,25 @@ def updateUser(id):
 
     else:
         return render_template('updateUser.html', user=user)
+
+
+
+
+@app.before_request
+def load_logged_in_user():
+    user_id = session.get( 'user_id' )
+
+    if user_id is None:
+        g.user = None
+    else:
+        user = User.query.filter_by(id = user_id).first()
+        g.user = user
+
+
+@app.route( '/logout' )
+def logout():
+    session.clear()
+    return redirect( url_for( 'index' ) )
 
 if __name__ == "__main__":
     app.run(debug=True)
