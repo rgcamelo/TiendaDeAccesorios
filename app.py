@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, session, g, flash
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from utils import isPasswordValid, isUsernameValid
 from datetime import datetime
@@ -143,8 +144,16 @@ def registrarProduct():
         nombre = request.form['nombre']
         referencia = request.form['referencia']
         marca = request.form['marca']
+        precio = request.form['precio']
         cantidad = request.form['cantidad']
-        new_Accesorio = Product(nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad)
+
+        imagen = request.form['imagen']
+
+        ruta_imagen = os.path.abspath('app\\static\\uploads\\{}'.format(imagen))
+        ruta_html = '../static/uploads/{}'.format(imagen)
+        #imagen.save(ruta_imagen)
+
+        new_Accesorio = Product(nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad, precio=precio)
 
         try:
             db.session.add(new_Accesorio)
@@ -179,6 +188,7 @@ def update(id):
         product.referencia = request.form['referencia']
         product.marca = request.form['marca']
         product.cantidad = request.form['cantidad']
+        product.precio = request.form['precio']
 
         try:
             db.session.commit()
