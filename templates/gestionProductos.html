@@ -13,6 +13,7 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
+                <th scope="col"></th>
                 <th scope="col">#</th>
                 <th scope="col">Referencia</th>
                 <th scope="col">Nombre</th>
@@ -24,6 +25,12 @@
         <tbody>
             {% for product in products%}
             <tr>
+                <td>
+                    {% if product.imagen %}
+                    <img src="{{ url_for('static',filename='imgProduct/'+product.imagen )}}" width="200px" height="200px" alt=""></td>
+
+                {% endif %} {% if product.imagen == None %}
+                <img class="mb-4" src="{{ url_for('static',filename='img/PLOGOb.png')}}" alt="" width="200" height="200"> {% endif %}
                 <td>{{ product.id }}</td>
                 <td>{{ product.referencia }}</td>
                 <td>{{ product.nombre }}</td>

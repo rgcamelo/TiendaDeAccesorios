@@ -5,7 +5,7 @@
 <div class="container-md">
 
     <div class="abs-center">
-        <form action="/registrarProduct" method="POST">
+        <form action="/registrarProduct" method="POST" enctype="multipart/form-data">
             <br>
             <div class="col-md-8">
                 <h2 class="Display-2">Agregar Producto</h2>
@@ -63,13 +63,20 @@
 
             </div>
 
-            <!-- Multiple Radios -->
             <div class="form-group">
+                <label class="col-md-4 control-label" required for="estadoProducto">Estado Producto:</label>
                 <div class="col-md-4">
-                    <!--Switch para estado-->
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="estadoProducto">
-                        <label class="custom-control-label" for="estadoProducto">Activar Producto</label>
+                    <div class="radio">
+                        <label for="estadoProducto-0">
+        <input type="radio" name="estadoProducto" id="estadoProducto-0" value="1">
+        Activo
+      </label>
+                    </div>
+                    <div class="radio">
+                        <label for="estadoProducto-1">
+        <input type="radio" name="estadoProducto" id="estadoProducto-1" value="2">
+        Inactivo
+      </label>
                     </div>
                 </div>
             </div>

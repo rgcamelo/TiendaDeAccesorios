@@ -1,9 +1,11 @@
-from flask import Flask, render_template, url_for, request, redirect, session, g, flash
+from flask import Flask, render_template, url_for, request, redirect, session, g, flash, make_response
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from utils import isPasswordValid, isUsernameValid
 from datetime import datetime
 from flask_bootstrap import Bootstrap
+from werkzeug.security import generate_password_hash, check_password_hash
+from os.path import abspath, dirname, join
 import functools
 import os
 
@@ -13,6 +15,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///accesorios.db'
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
+
+
 app.secret_key = os.urandom( 24 )
 
 class Product(db.Model):
@@ -41,7 +45,7 @@ class User(db.Model):
     direccion = db.Column(db.String(25), nullable=False)
     celular = db.Column(db.String(15), nullable=False)
     tipo = db.Column(db.String, nullable=False)
-    estado = db.Column(db.String, nullable=False)
+    estado = db.Column(db.String, nullable=False, default=1)
 
     def __repr__(self):
         return '<User %r>' % self.id
@@ -57,6 +61,9 @@ class User_Product(db.Model):
     def __repr__(self):
         return '<User_Product %r>' % self.id
 
+
+UPLOAD_FOLDER = os.path.abspath("./static/imgProduct/")
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 
@@ -86,16 +93,21 @@ def login():
                 #return('Contraseña requerida')
                 return render_template('index.html')
 
-            user = User.query.filter_by(usuario=usuario,contrasena=contrasena).first()
+            user = User.query.filter_by(usuario=usuario).first()
+            
 
             if user is None:
                 return('No encontro')
                 error = 'Usuario o contraseña invalidos'
             else:
-                session.clear()
-                id= str(user.id)
-                session['user_id'] = id
-                return redirect( url_for('home'))
+                if check_password_hash( user.contrasena, contrasena):
+                    session.clear()
+                    id= str(user.id)
+                    session['user_id'] = id
+                    resp = make_response( redirect( url_for('home')))
+                    resp.set_cookie('username',usuario)
+                    return resp
+
         return render_template('index.html')
     except:
         return render_template('index.html')
@@ -146,14 +158,17 @@ def registrarProduct():
         marca = request.form['marca']
         precio = request.form['precio']
         cantidad = request.form['cantidad']
+        estado = request.form['estadoProducto']
 
-        imagen = request.form['imagen']
+        imagen = request.files['imagen']
 
-        ruta_imagen = os.path.abspath('app\\static\\uploads\\{}'.format(imagen))
-        ruta_html = '../static/uploads/{}'.format(imagen)
-        #imagen.save(ruta_imagen)
+        if imagen:
+            nombreimagen = secure_filename(nombre+imagen.filename)
+            img_dir = app.config['UPLOAD_FOLDER']
+            os.makedirs ( img_dir,exist_ok=True)
+            imagen.save(os.path.join(app.config['UPLOAD_FOLDER'], nombreimagen))
 
-        new_Accesorio = Product(nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad, precio=precio)
+        new_Accesorio = Product(estado=estado,nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad, precio=precio, imagen=nombreimagen)
 
         try:
             db.session.add(new_Accesorio)
@@ -184,11 +199,24 @@ def update(id):
     product = Product.query.get_or_404(id)
 
     if request.method == 'POST':
-        product.nombre = request.form['nombre']
+        nombre = request.form['nombre']
+        product.nombre = nombre
         product.referencia = request.form['referencia']
         product.marca = request.form['marca']
         product.cantidad = request.form['cantidad']
         product.precio = request.form['precio']
+        product.estado = request.form['estadoProducto']
+
+        imagen = request.files['imagen']
+
+        if imagen:
+            nombreimagen = secure_filename(nombre+imagen.filename)
+            img_dir = app.config['UPLOAD_FOLDER']
+            os.makedirs ( img_dir,exist_ok=True)
+            imagen.save(os.path.join(app.config['UPLOAD_FOLDER'], nombreimagen))
+
+            product.imagen = nombreimagen
+
 
         try:
             db.session.commit()
@@ -208,6 +236,9 @@ def registrarUser():
         nombres = request.form['nombres']
         apellidos = request.form['apellidos']
         contrasena = request.form['contrasena']
+
+        hashContraseña = generate_password_hash(contrasena)
+
         cedula = request.form['cedula']
         fechaNacimiento = request.form['fechaNacimiento']
         format = '%Y-%m-%d'
@@ -218,7 +249,7 @@ def registrarUser():
         tipoUsuario = request.form['tipoUsuario']
         estadoUsuario = request.form['estadoUsuario']
         new_User = User(estado = estadoUsuario, apellidos = apellidos,
-        usuario=usuario,nombres=nombres,email=email,tipo=tipoUsuario,identificacion=cedula,direccion=direccion,celular=celular, fechaNacimiento=fecha,contrasena=contrasena)
+        usuario=usuario,nombres=nombres,email=email,tipo=tipoUsuario,identificacion=cedula,direccion=direccion,celular=celular, fechaNacimiento=fecha,contrasena=hashContraseña)
 
         #return(new_User.nombres+new_User.apellidos+new_User.celular+new_User.direccion+new_User.email+new_User.fechaNacimiento+new_User.identificacion+new_User.tipo+new_User.usuario)
 

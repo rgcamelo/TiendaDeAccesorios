@@ -104,6 +104,28 @@
                     </div>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" required for="estadoUsuario">Estado:</label>
+                <div class="col-md-4">
+                    <div class="radio">
+                        <label for="estadoUsuario-0">
+        <input type="radio" name="estadoUsuario" id="estadoUsuario-0" {% if user.estado == '1' %}
+        checked
+        {% endif %} value="1">
+        Activo
+      </label>
+                    </div>
+                    <div class="radio">
+                        <label for="estadoUsuario-1">
+        <input type="radio" name="estadoUsuario" id="estadoUsuario-1" {% if user.estado == '2' %}
+        checked
+        {% endif %} value="2">
+        Inactivo
+      </label>
+                    </div>
+                </div>
+            </div>
             <input class="btn btn-primary" type="submit" value="Actualizar">
 
         </form>

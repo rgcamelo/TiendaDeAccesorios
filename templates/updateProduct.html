@@ -5,7 +5,7 @@
 <div class="container-md">
 
     <div class="abs-center">
-        <form action="/updateProduct/{{ product.id }}" method="POST">
+        <form action="/updateProduct/{{ product.id }}" method="POST" enctype="multipart/form-data">
             <br>
             <div class="col-md-8">
                 <h2 class="Display-2">Actualizar Producto: {{ product.nombre}}</h2>
@@ -39,6 +39,15 @@
 
             <!-- Text input-->
             <div class="form-group">
+                <label class="col-md-4 control-label" for="lbprecio">Precio del Producto: </label>
+                <div class="col-md-6">
+                    <input value="{{ product.precio}}" id="lpprecio" name="precio" type="text" placeholder="Marca Producto" class="form-control input-md" required="">
+
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
                 <label class="col-md-4 control-label" for="lbcantidad">Cantidad Producto: </label>
                 <div class="col-md-6">
                     <input value="{{ product.cantidad}}" id="cantidadProducto" name="cantidad" type="number" placeholder="Cantidad" class="form-control input-md" required="">
@@ -49,18 +58,30 @@
             <div class="form-group">
                 <div class="col-md-4">
                     <label for="subirImagenProducto">Subir imagen producto</label>
-                    <input type="file" class="form-control-file" id="subirImagenProducto">
+                    <input type="file" name="imagen" class="form-control-file" id="subirImagenProducto">
                 </div>
 
             </div>
 
             <!-- Multiple Radios -->
             <div class="form-group">
+                <label class="col-md-4 control-label" required for="estadoProducto">Estado Producto:</label>
                 <div class="col-md-4">
-                    <!--Switch para estado-->
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="estadoProducto">
-                        <label class="custom-control-label" for="estadoProducto">Activar Producto</label>
+                    <div class="radio">
+                        <label for="estadoProducto-0">
+        <input type="radio" name="estadoProducto" id="estadoProducto-0" {% if product.estado == '1' %}
+        checked
+        {% endif %} value="1">
+        Activo
+      </label>
+                    </div>
+                    <div class="radio">
+                        <label for="estadoProducto-1">
+        <input type="radio" name="estadoProducto" id="estadoProducto-1" {% if product.estado == '2' %}
+        checked
+        {% endif %} value="2">
+        Inactivo
+      </label>
                     </div>
                 </div>
             </div>
