@@ -19,6 +19,7 @@
                 <th scope="col">Nombre</th>
                 <th scope="col">Marca</th>
                 <th scope="col">Cantidad</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Opciones</th>
             </tr>
         </thead>
@@ -36,8 +37,15 @@
                 <td>{{ product.nombre }}</td>
                 <td>{{ product.marca}}</td>
                 <td>{{ product.cantidad}}</td>
+                {% if product.estado == '1' %}
+                <td>Activo</td>
+                {% endif %} {% if product.estado == '2' %}
+                <td>Inactivo</td>
+                {% endif %}
                 <td>
-                    <a href="/deleteProduct/{{product.id}}" class="btn btn-danger">Eliminar</a>
+                    {% if product.estado != '2' %}
+                    <a href="/deleteProduct/{{product.id}}" class="btn btn-danger">Eliminar</a> {% endif %}
+
                     <a href="/updateProduct/{{product.id}}" class="btn btn-primary">Modificar</a>
                 </td>
             </tr>

@@ -55,6 +55,10 @@ class User_Product(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'),nullable=False)
     description = db.Column(db.String(50), nullable=False)
+    user = db.relationship('User',
+        backref=db.backref('user__product', lazy=True))
+    product = db.relationship('Product',
+        backref=db.backref('user__product', lazy=True))
 
 
 
@@ -108,6 +112,7 @@ def login():
                     resp.set_cookie('username',usuario)
                     return resp
 
+
         return render_template('index.html')
     except:
         return render_template('index.html')
@@ -132,6 +137,12 @@ def home():
 def user():
     users = User.query.all()
     return render_template('gestionUsuarios.html',users=users)
+
+@app.route('/records')
+@login_required
+def records():
+    records = User_Product.query.order_by(User_Product.id.desc()).all()
+    return render_template('gestionRegistros.html',records=records)
 
 @app.route('/addUser')
 @login_required
@@ -169,9 +180,17 @@ def registrarProduct():
             imagen.save(os.path.join(app.config['UPLOAD_FOLDER'], nombreimagen))
 
         new_Accesorio = Product(estado=estado,nombre=nombre,referencia=referencia,marca=marca,cantidad=cantidad, precio=precio, imagen=nombreimagen)
+        user_id = session.get( 'user_id' )
+        id= str(user_id)
+        user = User.query.filter_by(id = id).first()
+
+        registro = User_Product(user=user,product=new_Accesorio, description='Registro Producto: '+new_Accesorio.nombre)
+
 
         try:
+
             db.session.add(new_Accesorio)
+            db.session.add(registro)
             db.session.commit()
             return redirect('/product')
         except:
@@ -184,10 +203,16 @@ def registrarProduct():
 @app.route('/deleteProduct/<int:id>')
 @login_required
 def delete(id):
-    accessorioDelete = Product.query.get_or_404(id)
+    product = Product.query.get_or_404(id)
 
+    product.estado = '2'
+    
+    user_id = session.get( 'user_id' )
+    id= str(user_id)
+    user = User.query.filter_by(id = id).first()
+    registro = User_Product(user=user,product=product, description='Eliminar Producto: '+product.nombre)
     try:
-        db.session.delete(accessorioDelete)
+        db.session.add(registro)
         db.session.commit()
         return redirect('/product')
     except:
@@ -217,8 +242,13 @@ def update(id):
 
             product.imagen = nombreimagen
 
+        user_id = session.get( 'user_id' )
+        id= str(user_id)
+        user = User.query.filter_by(id = id).first()
+        registro = User_Product(user=user,product=product, description='Actualizar Producto: '+product.nombre)
 
         try:
+            db.session.add(registro)
             db.session.commit()
             return redirect('/product')
         except:
@@ -249,7 +279,9 @@ def registrarUser():
         tipoUsuario = request.form['tipoUsuario']
         estadoUsuario = request.form['estadoUsuario']
         new_User = User(estado = estadoUsuario, apellidos = apellidos,
-        usuario=usuario,nombres=nombres,email=email,tipo=tipoUsuario,identificacion=cedula,direccion=direccion,celular=celular, fechaNacimiento=fecha,contrasena=hashContraseña)
+        usuario=usuario,nombres=nombres,email=email,
+        tipo=tipoUsuario,identificacion=cedula,direccion=direccion,
+        celular=celular, fechaNacimiento=fecha,contrasena=hashContraseña)
 
         #return(new_User.nombres+new_User.apellidos+new_User.celular+new_User.direccion+new_User.email+new_User.fechaNacimiento+new_User.identificacion+new_User.tipo+new_User.usuario)
 
@@ -324,3 +356,6 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
