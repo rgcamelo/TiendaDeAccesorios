@@ -127,41 +127,69 @@ def login_required(view):
 
     return wrapped_view
 
+def admin_required(view):
+    @functools.wraps( view )
+    def wrapped_view(**kwargs):
+        if g.user.tipo != "1":
+            return redirect( url_for( 'home' ) )
+
+        return view( **kwargs )
+
+    return wrapped_view
+    
+
+
 @app.route('/home')
 @login_required
 def home():
-    return render_template('home.html')
+    products = Product.query.order_by(Product.date_created).all()
+    return render_template('home.html',products=products)
 
 @app.route('/user')
 @login_required
+@admin_required
 def user():
     users = User.query.all()
     return render_template('gestionUsuarios.html',users=users)
 
 @app.route('/records')
 @login_required
+@admin_required
 def records():
-    records = User_Product.query.order_by(User_Product.id.desc()).all()
+    records = User_Product.query.join(User).join(Product).order_by(User_Product.id.desc()).all()
     return render_template('gestionRegistros.html',records=records)
 
 @app.route('/addUser')
 @login_required
+@admin_required
 def addUser():
     return render_template('addUser.html')
 
 @app.route('/product')
 @login_required
+@admin_required
 def product():
     products = Product.query.order_by(Product.date_created).all()
     return render_template('gestionProductos.html',products=products)
 
+@app.route('/searchProduct', methods=['POST'])
+@login_required
+def searchProduct():
+    if request.method == 'POST':
+        busqueda = request.form['buscar']
+        products = Product.query.filter(Product.nombre.like("%"+busqueda+"%")) .all()
+        return render_template('search.html',products=products)
+    
+
 @app.route('/addProduct')
 @login_required
+@admin_required
 def addProduct():
     return render_template('addProduct.html')
 
 @app.route('/registrarProduct', methods=['POST'])
 @login_required
+@admin_required
 def registrarProduct():
     if request.method == 'POST':
         nombre = request.form['nombre']
@@ -202,6 +230,7 @@ def registrarProduct():
 
 @app.route('/deleteProduct/<int:id>')
 @login_required
+@admin_required
 def delete(id):
     product = Product.query.get_or_404(id)
 
@@ -258,8 +287,33 @@ def update(id):
         return render_template('updateProduct.html', product=product)
 
 
+@app.route('/updateUProduct/<int:id>', methods=['GET', 'POST'])
+@login_required
+def updateU(id):
+    product = Product.query.get_or_404(id)
+
+    if request.method == 'POST':
+        product.cantidad = request.form['cantidad']
+        user_id = session.get( 'user_id' )
+        id= str(user_id)
+        user = User.query.filter_by(id = id).first()
+        registro = User_Product(user=user,product=product, description='Actualizar Cantidad Producto: '+product.nombre)
+
+        try:
+            db.session.add(registro)
+            db.session.commit()
+            return redirect('/home')
+        except:
+            return 'There was an issue updating your task'
+
+    else:
+        return render_template('updateUProduct.html', product=product)
+
+
+
 @app.route('/registrarUser', methods=['POST'])
 @login_required
+@admin_required
 def registrarUser():
     if request.method == 'POST':
         usuario = request.form['usuario']
@@ -297,6 +351,7 @@ def registrarUser():
 
 @app.route('/deleteUser/<int:id>')
 @login_required
+@admin_required
 def deleteUser(id):
     userDelete = User.query.get_or_404(id)
 
@@ -309,13 +364,18 @@ def deleteUser(id):
     
 @app.route('/updateUser/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def updateUser(id):
     user = User.query.get_or_404(id)
 
     if request.method == 'POST':
         user.nombres = request.form['nombres']
         user.usuario = request.form['usuario']
-        user.contrasena = request.form['contrasena']
+        contrasena = request.form['contrasena']
+
+        hashContraseña = generate_password_hash(contrasena)
+        user.contrasena = hashContraseña
+
         user.identificacion = request.form['cedula']
         fechaNacimiento = request.form['fechaNacimiento']
         format = '%Y-%m-%d'
@@ -355,7 +415,9 @@ def logout():
     return redirect( url_for( 'index' ) )
 
 if __name__ == "__main__":
+    #app.run(port=443,ssl_context=('certEaccesorio01.pem','keyEaccesorio01.pem'))
     app.run(debug=True)
+    
 
 
 

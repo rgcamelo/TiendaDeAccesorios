@@ -24,6 +24,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
                     </li>
+                    {% if g.user.tipo == '1' %}
                     <li class="nav-item">
                         <a class="nav-link" href="/user">Gestion Usuarios</a>
                     </li>
@@ -33,13 +34,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/records">Registros</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca de</a>
-                    </li>
+                    {% endif %}
                 </ul>
+                <form action="/searchProduct" class="form-inline" method="POST">
+                    <input class="form-control mr-sm-2" name="buscar" type="search" placeholder="Buscar" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
                 <ul class="navbar-nav ml-auto"></ul>
                 <li class="nav-item ">
-                    <a class="pull-right" href="/logout" tabindex="-1" aria-disabled="false" class="btn btn-danger">Cerrar Sesión</a>
+                    <a class="pull-right" href="/logout" class="btn btn-danger">Cerrar Sesión</a>
                 </li>
 
             </div>

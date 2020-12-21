@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block content %}
+
+
+
+<div class="container-md">
+
+    <div class="abs-center">
+        <form action="/updateUProduct/{{ product.id }}" method="POST">
+            <br>
+            <div class="col-md-8">
+                <h2 class="Display-2">Actualizar Cantidad Producto: {{ product.nombre}}</h2>
+            </div>
+            <hr>
+
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="lbcantidad">Cantidad Producto: </label>
+                <div class="col-md-6">
+                    <input value="{{ product.cantidad}}" id="cantidadProducto" name="cantidad" type="number" placeholder="Cantidad" class="form-control input-md" required="">
+                </div>
+            </div>
+
+
+            <input class="btn btn-primary" type="submit" value="Actualizar">
+        </form>
+    </div>
+</div>
+
+{% endblock %}
